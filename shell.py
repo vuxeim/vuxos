@@ -1,12 +1,11 @@
-from system import OperatingSystem
-
-
 class Shell:
 
     def __init__(self, name: str):
         self.name = name
+        self.cwd = None
+        self.system = None
 
 
-    def start(self, os: OperatingSystem):
+    def __start(self):
         while ...:
-            os.get_input(input())
+            self.system.get_input(input())

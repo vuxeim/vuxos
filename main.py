@@ -3,7 +3,10 @@ from system import System
 from shell import Shell
 
 
-os = OperatingSystem('VuxOS')
-stas = User('stas')
+system = System('VuxOS')
+shell = Shell('vush')
+user = User('stas')
 
-os.login(stas)
+system.login(user=user, shell=shell)
+user.command('cd', '/root')
+user.command('pwd')

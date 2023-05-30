@@ -1,15 +1,26 @@
-from os import OperatingSystem
+from shell import Shell
 
+class CMD:
+    @staticmethod
+    def get_arg(amount: int, *args):
+        return args[0:amount]
+
+
+class Cd_CMD(CMD):
+
+    @staticmethod
+    def __init__(shell, *args):
+        path, = CMD.get_arg(1, *args)
+        shell.cwd = path
+
+
+class Pwd_CMD(CMD):
+
+    @staticmethod
+    def __init__(shell, *args):
+        shell.system.print(shell.cwd)
 
 resolver = {
-    'cd': cd_cmd,
-    'pwd': pwd_cmd,
+    'cd': Cd_CMD,
+    'pwd': Pwd_CMD,
 }
-
-
-def cd_cmd(os: OperatingSystem, path: str):
-    os.cwd = path
-
-
-def pwd_cmd(os: OperatingSystem):
-    os.print(os.cwd)
