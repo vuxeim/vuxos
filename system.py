@@ -13,6 +13,8 @@ class System:
         self.user = user
         user.shell = shell
 
+
+        shell.user = user
         shell.cwd = f"/home/{user.name}"
         shell.system = self
 
