@@ -11,8 +11,6 @@ class System:
 
     def login(self, *, user: User, shell: Shell):
         self.user = user
-        self.shell = shell
-
         user.shell = shell
 
         shell.cwd = f"/home/{user.name}"

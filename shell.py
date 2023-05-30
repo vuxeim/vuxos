@@ -1,11 +1,14 @@
+from command import Resolver
+
 class Shell:
 
-    def __init__(self, name: str):
+    resolver: Resolver = Resolver()
+
+    def __init__(self, name: str) -> None:
         self.name = name
         self.cwd = None
         self.system = None
 
-
-    def __start(self):
-        while ...:
-            self.system.get_input(input())
+    def execute(self, command: str, *args) -> None:
+        cmd = self.resolver.get(command)
+        cmd(self, *args)

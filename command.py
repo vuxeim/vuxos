@@ -1,26 +1,33 @@
-from shell import Shell
+from typing import Callable
 
-class CMD:
-    @staticmethod
-    def get_arg(amount: int, *args):
-        return args[0:amount]
+class CommandNotFound(Exception): ...
+
+class Resolver:
+
+    _C: dict = dict()
+
+    def __init__(self) -> None:
+        items = lambda: globals().items()
+        is_fun = lambda fun: type(fun) == type(is_fun)
+        rep = lambda name: name.replace('CMD_', '', 1)
+        is_cmd = lambda name: name.startswith('CMD_')
+
+        self._C = {rep(n): f for n, f in items() if is_fun(f) and is_cmd(n)}
+
+    def get(self, command: str) -> Callable:
+        cmd = self._C.get(command, None)
+        if cmd == None:
+            raise CommandNotFound(f"cmd {command}")
+        return cmd
+
+def __get_arg(amount: int, *args):
+    return args[0:amount]
+
+def CMD_cd(shell: 'Shell', *args) -> None:
+    path, = __get_arg(1, *args)
+    shell.cwd = path
+
+def CMD_pwd(shell: 'Shell', *args) -> None:
+    shell.system.print(shell.cwd)
 
 
-class Cd_CMD(CMD):
-
-    @staticmethod
-    def __init__(shell, *args):
-        path, = CMD.get_arg(1, *args)
-        shell.cwd = path
-
-
-class Pwd_CMD(CMD):
-
-    @staticmethod
-    def __init__(shell, *args):
-        shell.system.print(shell.cwd)
-
-resolver = {
-    'cd': Cd_CMD,
-    'pwd': Pwd_CMD,
-}
