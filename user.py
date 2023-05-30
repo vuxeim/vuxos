@@ -3,7 +3,7 @@ if TYPE_CHECKING: from shell import Shell
 
 class User:
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, *, name: str) -> None:
         self.name = name
         self.shell: Shell
 

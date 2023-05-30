@@ -1,13 +1,16 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-if TYPE_CHECKING: from shell import Shell
+if TYPE_CHECKING:
+    from shell import Shell
+    from filesystem import Filesystem
 
 from user import User
 
 class System:
 
-    def __init__(self, name: str):
+    def __init__(self, *, name: str, fs: Filesystem):
         self.name = name
+        self.filesystem = fs
         self.user: User
 
     def login(self, *, user: User, shell: Shell):

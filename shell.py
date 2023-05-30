@@ -9,11 +9,11 @@ class Shell:
 
     resolver: Resolver = Resolver()
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, *, name: str) -> None:
         self.name = name
 
         self.interactive = False
-        self.cwd = str() # TODO path
+        self.cwd = str()
         self.prompt = str()
         self.system: System
         self.user: User
@@ -34,4 +34,10 @@ class Shell:
     def interact(self) -> None:
         self.interactive = True
         while self.interactive:
-            self.execute(*input(self.prompt).split())
+            try:
+                inp = input(self.prompt)
+            except EOFError:
+                self.interactive = False
+                print()
+            else:
+                self.execute(*inp.split())

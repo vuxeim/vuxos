@@ -1,10 +1,12 @@
-from user import User
+from filesystem import Filesystem
 from system import System
 from shell import Shell
+from user import User
 
-system = System('VuxOS')
-shell = Shell('vxsh')
-user = User('vuxeim')
+filesystem = Filesystem()
+system = System(name='VuxOS', fs=filesystem)
+shell = Shell(name='vxsh')
+user = User(name='vuxeim')
 
 system.login(user=user, shell=shell)
 shell.interact()

@@ -39,3 +39,7 @@ def CMD_pwd(shell: Shell, *args: str) -> None:
 
 def CMD_exit(shell: Shell, *args: str) -> None:
     shell.interactive = False
+
+def CMD_ls(shell: Shell, *args: str) -> None:
+    files = shell.system.filesystem.listdir(shell.cwd)
+    shell.system.print(' '.join(files), raw=True)
