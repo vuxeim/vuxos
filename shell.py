@@ -25,9 +25,9 @@ class Shell:
             self.system.print(f"Command '{command}' not found!")
         else:
             cmd(self, *args)
-        finally:       
+        finally:
             self.update_prompt()
-    
+
     def update_prompt(self) -> None:
         self.prompt = f"{self.user.name}@{self.system.name}> "
 

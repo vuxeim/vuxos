@@ -3,8 +3,8 @@ from system import System
 from shell import Shell
 
 system = System('VuxOS')
-shell = Shell('vush')
-user = User('stas')
+shell = Shell('vxsh')
+user = User('vuxeim')
 
 system.login(user=user, shell=shell)
 shell.interact()

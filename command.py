@@ -7,7 +7,7 @@ class NotEnaughArguments(Exception): ...
 
 class Resolver:
 
-    _C: dict = dict()
+    _C: dict = {'': lambda _:...}
 
     def __init__(self) -> None:
         items = lambda: globals().items()
@@ -15,24 +15,20 @@ class Resolver:
         rep = lambda name: name.replace('CMD_', '', 1)
         is_cmd = lambda name: name.startswith('CMD_')
 
-        self._C = {'': lambda _:...} | {rep(n): f for n, f in items() if is_fun(f) and is_cmd(n)}
+        self._C |= {rep(n): f for n, f in items() if is_fun(f) and is_cmd(n)}
 
     def get(self, command: str) -> Callable:
         cmd = self._C.get(command, None)
         if cmd == None: raise CommandNotFound(f"'{command}'")
         return cmd
 
-def __get_arg(amount: int, *args: str):
-    a = args[0:amount]
-    l = len(a)
-    if l != amount:
-        err = f"requested {amount} | got {l}"
-        raise NotEnaughArguments(err)
-    return a
+def __pop_arg(*args: str) -> tuple[str, tuple[str, ...]]:
+    if len(args) < 1: raise NotEnaughArguments
+    return args[0], args[1:]
 
 def CMD_cd(shell: Shell, *args: str) -> None:
     try:
-        path, = __get_arg(1, *args)
+        path, args = __pop_arg(*args)
     except NotEnaughArguments:
         shell.system.print(f"cd: Path not specified!")
     else:
