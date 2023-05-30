@@ -17,7 +17,7 @@ class Resolver:
     def get(self, command: str) -> Callable:
         cmd = self._C.get(command, None)
         if cmd == None:
-            raise CommandNotFound(f"cmd {command}")
+            raise CommandNotFound(f"'{command}'")
         return cmd
 
 def __get_arg(amount: int, *args):
@@ -30,4 +30,5 @@ def CMD_cd(shell: 'Shell', *args) -> None:
 def CMD_pwd(shell: 'Shell', *args) -> None:
     shell.system.print(shell.cwd)
 
-
+def CMD_exit(shell: 'Shell', *args) -> None:
+    shell.interactive = False
