@@ -18,7 +18,7 @@ class Shell:
         self.system: System
         self.user: User
 
-    def execute(self, command: str, *args) -> None:
+    def execute(self, command: str = '', *args) -> None:
         try:
             cmd = self.resolver.get(command)
         except CommandNotFound:
