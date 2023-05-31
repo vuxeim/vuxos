@@ -25,7 +25,5 @@ class System:
         shell.update_prompt()
 
     def print(self, text: str, *, raw: bool = False) -> None:
-        if raw:
-            print(text)
-            return
+        if raw: return print(text)
         print(f"{self.user.shell.name}: {text}")
