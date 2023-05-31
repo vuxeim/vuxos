@@ -1,0 +1,51 @@
+{
+    "name": "/",
+    "type": "directory",
+    "content": "",
+    "nodes": [
+        {
+            "name": "home",
+            "type": "directory",
+            "content": "",
+            "nodes": [
+                {
+                    "name": "vuxeim",
+                    "type": "directory",
+                    "content": "",
+                    "nodes": [
+                        {
+                            "name": ".shell",
+                            "type": "file",
+                            "content": "vxsh",
+                            "nodes": []
+                        }
+                    ]
+                }
+            ]
+        }, {
+            "name": "root",
+            "type":"directory",
+            "content": "",
+            "nodes": [
+                {
+                    "name": "file",
+                    "type": "file",
+                    "content": "secret",
+                    "nodes": []
+                }
+            ]
+        }, {
+            "name": "etc",
+            "type": "directory",
+            "content": "",
+            "nodes": [
+                {
+                    "name": "passwd",
+                    "type": "file",
+                    "content": "vuxeim:1000",
+                    "nodes": []
+                }
+            ]
+        }
+    ]
+}

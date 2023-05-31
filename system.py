@@ -29,4 +29,3 @@ class System:
             print(text)
             return
         print(f"{self.user.shell.name}: {text}")
-

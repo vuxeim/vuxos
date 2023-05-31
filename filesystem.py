@@ -1,7 +1,9 @@
+from disk import Disk
+
 class Filesystem:
 
-    def __init__(self):
-        ...
+    def __init__(self, *, disk: Disk):
+        self._structure = disk.get_structure()
 
     def listdir(self, path: str) -> list[str]:
         return _random_files()

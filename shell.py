@@ -29,7 +29,7 @@ class Shell:
             self.update_prompt()
 
     def update_prompt(self) -> None:
-        self.prompt = f"{self.user.name}@{self.system.name}> "
+        self.prompt = f"{self.user.name}@{self.system.name} {self.cwd} > "
 
     def interact(self) -> None:
         self.interactive = True
