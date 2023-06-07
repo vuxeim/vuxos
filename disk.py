@@ -21,18 +21,21 @@ class Node:
         type: enum value, FILE or DIRECTORY
         content: file content (empty string if directory)
         nodes: children list (empty list if file)
+        parent: parent node object
     """
 
     name: str
     type: TYPES
     content: str
     nodes: list[Node]
+    parent: Node | None
 
-    def __init__(self, type: TYPES, name: str, content: str) -> None:
+    def __init__(self, type: TYPES, name: str, content: str, parent: Node | None) -> None:
         self.type = type
         self.name = name
         self.content = content
         self.nodes = list()
+        self.parent = parent
 
     def __repr__(self):
         return f"{self.type.capitalize()}: {self.name}"
@@ -54,10 +57,12 @@ class Disk:
         with open(filename, 'rb') as f:
             return json.load(f)
 
-    def get_structure(self, data: dict | None = None) -> Node:
+    def get_structure(self) -> Node:
+        return self._get_node_object(self.data, None)
+
+    def _get_node_object(self, data: dict, parent: Node | None) -> Node:
         """ Get tree structure of all files and directories """
-        if data == None: data = self.data
-        n = Node(data[FIELDS.TYPE], data[FIELDS.NAME], data[FIELDS.CONTENT])
+        obj = Node(data[FIELDS.TYPE], data[FIELDS.NAME], data[FIELDS.CONTENT], parent)
         for node in data[FIELDS.NODES]:
-            n.nodes.append(self.get_structure(node))
-        return n
+            obj.nodes.append(self._get_node_object(node, obj))
+        return obj

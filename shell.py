@@ -1,8 +1,9 @@
 from __future__ import annotations
-
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from system import System
+    from user import User
 from command import Resolver, CommandNotFound
-from system import System
-from user import User
 
 class Shell:
 
@@ -59,6 +60,5 @@ class Shell:
                 inp = input(self.prompt)
             except EOFError:
                 self.interactive = False
-                print()
             else:
                 self.execute(*inp.split())

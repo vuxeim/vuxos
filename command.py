@@ -70,6 +70,16 @@ def CMD_exit(shell: Shell, *args: str) -> None:
     """ Exit shell session """
     shell.interactive = False
 
+def CMD_parent(shell: Shell, *args: str) -> None:
+    if __arg(*args):
+        arg, args = __pop_arg(*args)
+        shell.system.print(f"Unknown argument: {arg}")
+        return
+
+    pwd = shell.cwd
+    parent = shell.system.filesystem.get_node_at(pwd).parent
+    shell.system.print(f".. = {parent}")
+
 def CMD_ls(shell: Shell, *args: str) -> None:
     """ List directory content """
     if __arg(*args):
@@ -77,10 +87,9 @@ def CMD_ls(shell: Shell, *args: str) -> None:
     else:
         path = shell.cwd
 
-    try:
+    if shell.system.filesystem.exists(path):
         nodes = shell.system.filesystem.listdir(path)
-    except FileNotFoundError:
-        shell.system.print(f"ls: cannot access '{path}': No such file or directory")
-    else:
         lines = [f"{n.type.lower()}: {n.name}" for n in nodes]
         shell.system.print('\n'.join(lines), raw=True)
+    else:
+        shell.system.print(f"ls: cannot access '{path}': No such file or directory")
