@@ -7,6 +7,7 @@ class FIELD(StrEnum):
     TYPE = auto()
     CONTENT = auto()
     NODES = auto()
+    PARENT = auto()
 
 class TYPE(StrEnum):
     FILE = auto()
@@ -36,12 +37,18 @@ class Node:
         self.content = content
         self.nodes = list()
         self.parent = parent
-        self.path = self._get_path(self)
+        self.path = self._get_abs_path(self)
 
-    def _get_path(self, node: Node | None, path: str = '') -> str:
+    def is_dir(self) -> bool:
+        return self.type == TYPE.DIRECTORY
+
+    def is_file(self) -> bool:
+        return self.type == TYPE.FILE
+
+    def _get_abs_path(self, node: Node | None, path: str = '') -> str:
         if node.parent == None:
             return path
-        return self._get_path(node.parent, f"/{node.name}{path}")
+        return self._get_abs_path(node.parent, f"/{node.name}{path}")
 
     def __repr__(self):
         return f"{self.type.capitalize()}: {self.name} ({self.path})"
@@ -53,9 +60,9 @@ class Disk:
 
     def __init__(self, *, name: str) -> None:
         self.name = name
-        self.data: dict = self.read()
+        self.data: dict = self._read()
 
-    def read(self) -> dict:
+    def _read(self) -> dict:
         """ Load data from disk file """
         st = __class__.STORAGE_TYPE
         extension = ('.'+st) if st != '' else ''

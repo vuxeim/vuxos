@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import Callable, TYPE_CHECKING
 if TYPE_CHECKING: from shell import Shell
-from disk import TYPE
 
 class CommandNotFound(Exception): ...
 class NoRemainingArguments(Exception): ...
@@ -71,7 +70,7 @@ def CMD_cd(shell: Shell, *args: str) -> None:
 
     if path.startswith('/'):
         if fs.exists(path):
-            if fs.get_node_at(path).type != TYPE.DIRECTORY:
+            if not fs.get_node_at(path).is_dir():
                 shell.system.print(f"cd: not a directory: {path}")
                 return
             shell.cwd = path
@@ -79,12 +78,11 @@ def CMD_cd(shell: Shell, *args: str) -> None:
     else:
         new_path = (shell.cwd if shell.cwd != '/' else '')+'/'+path
         if fs.exists(new_path):
-            if fs.get_node_at(new_path).type != TYPE.DIRECTORY:
+            if not fs.get_node_at(new_path).is_dir():
                 shell.system.print(f"cd: not a directory: {path}")
                 return
             shell.cwd = new_path
             return
-
 
     shell.system.print(f"cd: no such file or directory: {path}")
 

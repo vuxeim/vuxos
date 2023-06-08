@@ -12,8 +12,7 @@ class Shell:
 
     def __init__(self, *, name: str) -> None:
         self.name = name
-
-        self.interactive = False
+        self.interactive: bool = False
         self.cwd = str()
         self.prompt = str()
         self.system: System
