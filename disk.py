@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import StrEnum, auto
 import json
 
-class FIELDS(StrEnum):
+class FIELD(StrEnum):
     NAME = auto()
     TYPE = auto()
     CONTENT = auto()
@@ -36,9 +36,16 @@ class Node:
         self.content = content
         self.nodes = list()
         self.parent = parent
+        self.path = self._get_path(self)
+
+    def _get_path(self, node: Node | None, path: str = '') -> str:
+        if node.parent == None:
+            return path
+        return self._get_path(node.parent, '/'+node.name+path)
+
 
     def __repr__(self):
-        return f"{self.type.capitalize()}: {self.name}"
+        return f"{self.type.capitalize()}: {self.name} ({self.path})"
 
 class Disk:
     """ Represents a hard drive """
@@ -58,11 +65,11 @@ class Disk:
             return json.load(f)
 
     def get_structure(self) -> Node:
-        return self._get_node_object(self.data, None)
+        return self._get_node(data=self.data, parent=None)
 
-    def _get_node_object(self, data: dict, parent: Node | None) -> Node:
+    def _get_node(self, data: dict, parent: Node | None) -> Node:
         """ Get tree structure of all files and directories """
-        obj = Node(data[FIELDS.TYPE], data[FIELDS.NAME], data[FIELDS.CONTENT], parent)
-        for node in data[FIELDS.NODES]:
-            obj.nodes.append(self._get_node_object(node, obj))
+        obj = Node(data[FIELD.TYPE], data[FIELD.NAME], data[FIELD.CONTENT], parent)
+        for node in data[FIELD.NODES]:
+            obj.nodes.append(self._get_node(node, obj))
         return obj

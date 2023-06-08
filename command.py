@@ -89,7 +89,21 @@ def CMD_ls(shell: Shell, *args: str) -> None:
 
     if shell.system.filesystem.exists(path):
         nodes = shell.system.filesystem.listdir(path)
-        lines = [f"{n.type.lower()}: {n.name}" for n in nodes]
+        lines = [f"{n.type.capitalize()}: {n.name}" for n in nodes]
+        shell.system.print('\n'.join(lines), raw=True)
+    else:
+        shell.system.print(f"ls: cannot access '{path}': No such file or directory")
+
+def CMD_ll(shell: Shell, *args: str) -> None:
+    """ List directory content """
+    if __arg(*args):
+        path, args = __pop_arg(*args)
+    else:
+        path = shell.cwd
+
+    if shell.system.filesystem.exists(path):
+        nodes = shell.system.filesystem.listdir(path)
+        lines = [n.__repr__() for n in nodes]
         shell.system.print('\n'.join(lines), raw=True)
     else:
         shell.system.print(f"ls: cannot access '{path}': No such file or directory")
