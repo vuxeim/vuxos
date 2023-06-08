@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Callable, TYPE_CHECKING
 if TYPE_CHECKING: from shell import Shell
+from disk import TYPE
 
 class CommandNotFound(Exception): ...
 class NoRemainingArguments(Exception): ...
@@ -56,11 +57,36 @@ def __arg(*args: str) -> bool:
 
 def CMD_cd(shell: Shell, *args: str) -> None:
     """ Change directory command """
-    if __arg(*args):
-        path, args = __pop_arg(*args)
-        shell.cwd = path
+    if not __arg(*args):
+        shell.cwd = f"/home/{shell.user.name}"
+        return
+
+    fs = shell.system.filesystem
+
+    path, args = __pop_arg(*args)
+
+    if path == "~":
+        shell.cwd = f"/home/{shell.user.name}"
+        return
+
+    if path.startswith('/'):
+        if fs.exists(path):
+            if fs.get_node_at(path).type != TYPE.DIRECTORY:
+                shell.system.print(f"cd: not a directory: {path}")
+                return
+            shell.cwd = path
+            return
     else:
-        shell.system.print(f"cd: Path not specified!")
+        new_path = (shell.cwd if shell.cwd != '/' else '')+'/'+path
+        if fs.exists(new_path):
+            if fs.get_node_at(new_path).type != TYPE.DIRECTORY:
+                shell.system.print(f"cd: not a directory: {path}")
+                return
+            shell.cwd = new_path
+            return
+
+
+    shell.system.print(f"cd: no such file or directory: {path}")
 
 def CMD_pwd(shell: Shell, *args: str) -> None:
     """ Print work directory command """

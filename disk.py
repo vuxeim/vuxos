@@ -8,7 +8,7 @@ class FIELD(StrEnum):
     CONTENT = auto()
     NODES = auto()
 
-class TYPES(StrEnum):
+class TYPE(StrEnum):
     FILE = auto()
     DIRECTORY = auto()
 
@@ -25,12 +25,12 @@ class Node:
     """
 
     name: str
-    type: TYPES
+    type: TYPE
     content: str
     nodes: list[Node]
     parent: Node | None
 
-    def __init__(self, type: TYPES, name: str, content: str, parent: Node | None) -> None:
+    def __init__(self, type: TYPE, name: str, content: str, parent: Node | None) -> None:
         self.type = type
         self.name = name
         self.content = content
@@ -41,8 +41,7 @@ class Node:
     def _get_path(self, node: Node | None, path: str = '') -> str:
         if node.parent == None:
             return path
-        return self._get_path(node.parent, '/'+node.name+path)
-
+        return self._get_path(node.parent, f"/{node.name}{path}")
 
     def __repr__(self):
         return f"{self.type.capitalize()}: {self.name} ({self.path})"
