@@ -109,27 +109,23 @@ def CMD_parent(shell: Shell, *args: str) -> None:
 def CMD_ls(shell: Shell, *args: str) -> None:
     """ List directory content """
     if __arg(*args):
-        path, args = __pop_arg(*args)
+        arg, args = __pop_arg(*args)
+        if arg != '-l':
+            l = False
+            path = arg
+        else:
+            l = True
+            if __arg(*args):
+                path, args = __pop_arg(*args)
+            else:
+                path = shell.cwd
     else:
+        l = False
         path = shell.cwd
 
     if shell.system.filesystem.exists(path):
         nodes = shell.system.filesystem.listdir(path)
-        lines = [f"{n.type.capitalize()}: {n.name}" for n in nodes]
-        shell.system.print('\n'.join(lines), raw=True)
-    else:
-        shell.system.print(f"ls: cannot access '{path}': No such file or directory")
-
-def CMD_ll(shell: Shell, *args: str) -> None:
-    """ List directory content """
-    if __arg(*args):
-        path, args = __pop_arg(*args)
-    else:
-        path = shell.cwd
-
-    if shell.system.filesystem.exists(path):
-        nodes = shell.system.filesystem.listdir(path)
-        lines = [n.__repr__() for n in nodes]
+        lines = [n.__repr__() if l else f"{n.type.capitalize()}: {n.name}" for n in nodes]
         shell.system.print('\n'.join(lines), raw=True)
     else:
         shell.system.print(f"ls: cannot access '{path}': No such file or directory")
