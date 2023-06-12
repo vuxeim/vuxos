@@ -56,10 +56,3 @@ class Filesystem:
             return node.nodes
         raise FileNotFoundError("Dont catch, use exists() method")
 
-def _random_files():
-    """ Generate mock file names """
-    import string, random
-    rnd_letter = lambda: random.choice(string.ascii_letters)
-    rnd_rng = lambda i, x: range(random.randint(i, x))
-    rnd_name = lambda: ''.join([rnd_letter() for _ in rnd_rng(5, 10)])
-    return [rnd_name() for _ in rnd_rng(5, 10)]

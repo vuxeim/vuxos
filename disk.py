@@ -79,3 +79,4 @@ class Disk:
         for node in data[FIELD.NODES]:
             obj.nodes.append(self._get_node(node, obj))
         return obj
+
