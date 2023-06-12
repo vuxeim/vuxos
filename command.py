@@ -1,35 +1,16 @@
 from __future__ import annotations
-from typing import Callable, TYPE_CHECKING
-if TYPE_CHECKING: from shell import Shell
+from typing import Callable
 
 class CommandNotFound(Exception): ...
 class NoRemainingArguments(Exception): ...
 
 class Resolver:
-    """
-    Makes functions from *this* file
-    conveniently available through
-    class methods.
 
-    A bit hacky.
-    """
-
-    _C: dict = {'': lambda _:...}
+    _C: dict = {'': type}
 
     def __init__(self) -> None:
-        self._load()
 
-    def _load(self):
-        """
-        Stores functions that starts with 'CMD_'
-        from *this* file to a variable.
-        """
-        items = lambda: globals().items()
-        is_fun = lambda fun: type(fun) == type(is_fun)
-        rep = lambda name: name.replace('CMD_', '', 1)
-        is_cmd = lambda name: name.startswith('CMD_')
-
-        self._C |= {rep(n): f for n, f in items() if is_fun(f) and is_cmd(n)}
+        self._C |= {n.removeprefix('CMD_'): c for n, c in __import__('commands').commands}
 
     def get(self, command: str) -> Callable:
         """
@@ -42,88 +23,14 @@ class Resolver:
             raise CommandNotFound(command.join("''"))
         return cmd
 
-def __pop_arg(*args: str) -> tuple[str, tuple[str, ...]]:
+def _pop_arg(*args: str) -> tuple[str, tuple[str, ...]]:
     """ Pop next argument from args list """
     if len(args) < 1:
         raise NoRemainingArguments
     return args[0], args[1:]
 
-def __arg(*args: str) -> bool:
+def _arg(*args: str) -> bool:
     """ Whether there are arguments left in list """
     if len(args) > 0:
         return True
     return False
-
-def CMD_cd(shell: Shell, *args: str) -> None:
-    """ Change directory command """
-    if not __arg(*args):
-        shell.cwd = f"/home/{shell.user.name}"
-        return
-
-    fs = shell.system.filesystem
-
-    path, args = __pop_arg(*args)
-
-    if path == "~":
-        shell.cwd = f"/home/{shell.user.name}"
-        return
-
-    if path.startswith('/'):
-        if fs.exists(path):
-            if not fs.get_node_at(path).is_dir():
-                shell.system.print(f"cd: not a directory: {path}")
-                return
-            shell.cwd = path
-            return
-    else:
-        new_path = (shell.cwd if shell.cwd != '/' else '')+'/'+path
-        if fs.exists(new_path):
-            if not fs.get_node_at(new_path).is_dir():
-                shell.system.print(f"cd: not a directory: {path}")
-                return
-            shell.cwd = new_path
-            return
-
-    shell.system.print(f"cd: no such file or directory: {path}")
-
-def CMD_pwd(shell: Shell, *args: str) -> None:
-    """ Print work directory command """
-    shell.system.print(shell.cwd, raw=True)
-
-def CMD_exit(shell: Shell, *args: str) -> None:
-    """ Exit shell session """
-    shell.interactive = False
-
-def CMD_parent(shell: Shell, *args: str) -> None:
-    if __arg(*args):
-        arg, args = __pop_arg(*args)
-        shell.system.print(f"Unknown argument: {arg}")
-        return
-
-    pwd = shell.cwd
-    parent = shell.system.filesystem.get_node_at(pwd).parent
-    shell.system.print(f".. = {parent}")
-
-def CMD_ls(shell: Shell, *args: str) -> None:
-    """ List directory content """
-    if __arg(*args):
-        arg, args = __pop_arg(*args)
-        if arg != '-l':
-            l = False
-            path = arg
-        else:
-            l = True
-            if __arg(*args):
-                path, args = __pop_arg(*args)
-            else:
-                path = shell.cwd
-    else:
-        l = False
-        path = shell.cwd
-
-    if shell.system.filesystem.exists(path):
-        nodes = shell.system.filesystem.listdir(path)
-        lines = [n.__repr__() if l else f"{n.type.capitalize()}: {n.name}" for n in nodes]
-        shell.system.print('\n'.join(lines), raw=True)
-    else:
-        shell.system.print(f"ls: cannot access '{path}': No such file or directory")
