@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from shell import Shell
 
@@ -8,31 +8,40 @@ from command import _arg, _pop_arg
 class CMD_cat:
     """ Print file content """
 
-    def __new__(cls, shell: Shell, *args: str) -> Callable:
+    def specify_name(self) -> None:
+        self.shell.system.print(f"cat: Please specify file name")
 
-        specify_name = lambda: shell.system.print(f"cat: Please specify file name")
-        is_directory = lambda path: shell.system.print(f"cat: {path}: Is a directory")
-        no_file = lambda path: shell.system.print(f"cat: {path}: No such file or directory")
-        sys_print = lambda content: shell.system.print(content, raw=True)
+    def is_directory(self) -> None:
+        self.shell.system.print(f"cat: {self.path}: Is a directory")
+
+    def no_file(self) -> None:
+        self.shell.system.print(f"cat: {self.path}: No such file or directory")
+
+    def sys_print(self, text: str) -> None:
+        self.shell.system.print(text)
+
+    def __init__(self, shell: Shell, *args: str) -> None:
+        self.shell = shell
 
         if not _arg(*args):
-            return specify_name()
+            return self.specify_name()
 
-        path, args = _pop_arg(*args)
+        self.path, args = _pop_arg(*args)
+        fs = shell.system.filesystem
 
-        if path in ('~'):
-            return is_directory(path)
+        # TODO: find better solution
+        if self.path == '~':
+            return self.is_directory()
 
-        if not path.startswith('/'):
-            path = (shell.cwd if shell.cwd != '/' else '')+'/'+path
+        if not self.path.startswith('/'):
+            self.path = (shell.cwd if shell.cwd != '/' else '')+'/'+self.path
 
-        if shell.system.filesystem.exists(path):
-            node = shell.system.filesystem.get_node_at(path)
-            if not node.is_file():
-                return is_directory(path)
-        else:
-            return no_file(path)
+        if not fs.exists(self.path):
+            return self.no_file()
 
-        return sys_print(node.content)
+        node = fs.get_node_at(self.path)
 
+        if not node.is_file():
+            return self.is_directory()
 
+        return self.sys_print(node.content)

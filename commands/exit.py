@@ -6,5 +6,5 @@ if TYPE_CHECKING:
 class CMD_exit:
     """ Exit shell session """
 
-    def __new__(cls, shell: Shell, *args: str) -> None:
+    def __init__(self, shell: Shell, *args: str) -> None:
         shell.interactive = False

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from shell import Shell
 
@@ -8,25 +8,34 @@ from command import _arg, _pop_arg
 class CMD_ls:
     """ List directory content """
 
-    def __new__(cls, shell: Shell, *args: str) -> Callable:
+    def no_such_file_or_dir(self) -> None:
+        msg = f"ls: cannot access '{self.path}': No such file or directory"
+        self.shell.system.print(msg)
+
+    def __init__(self, shell: Shell, *args: str) -> None:
+        self.shell = shell
+
+        fs = shell.system.filesystem
+
         if _arg(*args):
             arg, args = _pop_arg(*args)
             if arg != '-l':
-                l = False
-                path = arg
+                flag_l = False
+                self.path = arg
             else:
-                l = True
+                flag_l = True
                 if _arg(*args):
-                    path, args = _pop_arg(*args)
+                    self.path, args = _pop_arg(*args)
                 else:
-                    path = shell.cwd
+                    self.path = shell.cwd
         else:
-            l = False
-            path = shell.cwd
+            flag_l = False
+            self.path = shell.cwd
 
-        if shell.system.filesystem.exists(path):
-            nodes = shell.system.filesystem.listdir(path)
-            lines = [n.__repr__() if l else f"{n.type.capitalize()}: {n.name}" for n in nodes]
-            shell.system.print('\n'.join(lines), raw=True)
-        else:
-            shell.system.print(f"ls: cannot access '{path}': No such file or directory")
+        if not fs.exists(self.path):
+            return self.no_such_file_or_dir()
+
+        fmt = lambda node: f"{node.type.capitalize()}: {node.name}"
+        get_line = lambda node: node.__repr__() if flag_l else fmt(node)
+        lines = [get_line(n) for n in fs.listdir(self.path)]
+        shell.system.print('\n'.join(lines))

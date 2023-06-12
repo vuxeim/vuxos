@@ -24,6 +24,7 @@ class System:
         self.print(f"User {user.name} has logged in!")
         shell.update_prompt()
 
-    def print(self, text: str, *, raw: bool = False) -> None:
-        if raw: return print(text)
+    def print(self, text: str, *, prefix: bool = False) -> None:
+        if not prefix:
+            return print(text)
         print(f"{self.user.shell.name}: {text}")

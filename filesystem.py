@@ -55,4 +55,3 @@ class Filesystem:
             node = self.get_node_at(path)
             return node.nodes
         raise FileNotFoundError("Dont catch, use exists() method")
-

@@ -45,7 +45,7 @@ class Node:
     def is_file(self) -> bool:
         return self.type == TYPE.FILE
 
-    def _get_abs_path(self, node: Node | None, path: str = '') -> str:
+    def _get_abs_path(self, node: Node, path: str = '') -> str:
         if node.parent == None:
             return path
         return self._get_abs_path(node.parent, f"/{node.name}{path}")
@@ -79,4 +79,3 @@ class Disk:
         for node in data[FIELD.NODES]:
             obj.nodes.append(self._get_node(node, obj))
         return obj
-

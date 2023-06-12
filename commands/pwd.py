@@ -6,6 +6,5 @@ if TYPE_CHECKING:
 class CMD_pwd:
     """ Print work directory command """
 
-    def __new__(cls, shell: Shell, *args: str) -> None:
-        shell.system.print(shell.cwd, raw=True)
-
+    def __init__(self, shell: Shell, *args: str) -> None:
+        shell.system.print(shell.cwd)

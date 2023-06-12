@@ -1,18 +1,17 @@
 from __future__ import annotations
-from typing import Callable
 
 class CommandNotFound(Exception): ...
 class NoRemainingArguments(Exception): ...
 
 class Resolver:
 
-    _C: dict = {'': type}
+    _C: dict[str, type] = {'': type}
 
     def __init__(self) -> None:
 
         self._C |= {n.removeprefix('CMD_'): c for n, c in __import__('commands').commands}
 
-    def get(self, command: str) -> Callable:
+    def get(self, command: str) -> type:
         """
         Returns function corresponding
         to specified name.
