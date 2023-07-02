@@ -16,7 +16,7 @@ class User:
         self.shell: Shell
         self.session: bool = False
 
-    def attach_session(self, shell: Shell) -> None:
+    def attach_session(self, *, shell: Shell) -> None:
         self.session = True
         self.shell = shell
 

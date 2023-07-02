@@ -1,5 +1,7 @@
 from __future__ import annotations
-from disk import Disk, Node
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from disk import Disk, Node
 
 class NodeNotFound(Exception): ...
 
@@ -17,7 +19,10 @@ class Filesystem:
             return True
 
     def _get_node(self, structure: Node, names: list[str]) -> Node:
-        """ Returns node object of from corresponding path """
+        """
+        Recursive.
+        Returns node object at corresponding path.
+        """
 
         # Recursion -- base case
         if len(names) < 1:
@@ -37,13 +42,21 @@ class Filesystem:
         raise NodeNotFound
 
     def get_node_at(self, path: str) -> Node:
-        """ Uses recursive method _get_node() """
+        """
+        Uses recursive method _get_node()
+        to return node at specified path.
+        """
+
+        if path == '':
+            raise Exception("Empty string as path")
+
         if path == '/':
             nodes = ['/']
         else:
             nodes = path.split('/')
             if nodes[0] == '':
                 nodes[0] = '/'
+
         return self._get_node(self._structure, nodes)
 
     def listdir(self, path: str) -> list[Node]:

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from system import System
     from user import User
+
 from command import Resolver, CommandNotFound
 
 class Shell:
@@ -32,6 +33,22 @@ class Shell:
             cmd(self, *args)
         finally:
             self.update_prompt()
+
+    def create_session(self, *, system: System) -> None:
+        """
+        Allows shell to interact with
+        underlaying operating system.
+        """
+        self.system = system
+
+    def attach_user(self, *, user: User) -> None:
+        """
+        Allows user to interact with
+        operating system via shell
+        """
+        self.user = user
+        self.user.attach_session(shell=self)
+        self.cwd = f"/home/{user.name}"
 
     def update_prompt(self) -> None:
         """ Straightforward """

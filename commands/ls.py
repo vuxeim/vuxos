@@ -33,6 +33,7 @@ class CMD_ls:
             self.path = shell.cwd
 
         if not fs.exists(self.path):
+            shell.system.dp(path=self.path)
             return self.no_such_file_or_dir()
 
         fmt = lambda node: f"{node.type.capitalize()}: {node.name}"
