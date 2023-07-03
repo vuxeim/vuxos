@@ -4,6 +4,7 @@ if TYPE_CHECKING:
     from system import System
     from user import User
 
+from path import Path
 from command import Resolver, CommandNotFound
 
 class Shell:
@@ -14,9 +15,9 @@ class Shell:
     def __init__(self, *, name: str) -> None:
         self.name = name
         self.interactive: bool = False
-        self.cwd = str()
         self.prompt = str()
         self.system: System
+        self.cwd: Path = Path.empty()
         self.user: User
 
     def execute(self, command: str = '', *args) -> None:
@@ -34,6 +35,11 @@ class Shell:
         finally:
             self.update_prompt()
 
+    def pathify(self, path: str) -> Path:
+        name = self.user.name
+        cwd = self.cwd.absolute
+        return Path(path=path, username=name, cwd=cwd)
+
     def create_session(self, *, system: System) -> None:
         """
         Allows shell to interact with
@@ -48,7 +54,7 @@ class Shell:
         """
         self.user = user
         self.user.attach_session(shell=self)
-        self.cwd = f"/home/{user.name}"
+        self.cwd = self.pathify("~")
 
     def update_prompt(self) -> None:
         """ Straightforward """
@@ -61,7 +67,7 @@ class Shell:
         username = name_color+self.user.name
         at = at_color+'@'
         machine = system_color+self.system.name
-        path = path_color+self.cwd
+        path = path_color+self.cwd.pretty
         arrow = arrow_color+'>'+reset
         self.prompt = f"{username}{at}{machine} {path} {arrow} "
 

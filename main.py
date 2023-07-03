@@ -11,5 +11,4 @@ shell = Shell(name='vxsh')
 user = User(name='vuxeim')
 
 system.login(user=user, shell=shell)
-user.command('cd', '.')
 shell.interact()
