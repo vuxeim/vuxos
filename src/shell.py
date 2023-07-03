@@ -22,9 +22,9 @@ class Shell:
 
     def execute(self, command: str = '', *args) -> None:
         """
-        Decide if command is a shell built-in command
-        or a installed software.
-        Then runs it.
+        Decide if command is a shell
+        built-in command or a installed
+        software. Then runs it.
         """
         try:
             cmd = self.resolver.get(command)
@@ -36,6 +36,7 @@ class Shell:
             self.update_prompt()
 
     def pathify(self, path: str) -> Path:
+        """ Returns path object from string """
         name = self.user.name
         cwd = self.cwd.absolute
         return Path(path=path, username=name, cwd=cwd)

@@ -13,6 +13,10 @@ class System:
         self.filesystem = fs
 
     def login(self, *, user: User, shell: Shell):
+        """
+        Sets up communication between user,
+        shell and operating system.
+        """
         self.shell = shell
         shell.create_session(system=self)
         shell.attach_user(user=user)
@@ -20,6 +24,7 @@ class System:
         self.print(f"User {user.name} has logged in!")
 
     def print(self, text: str, *, prefix: bool = False) -> None:
+        """ Central print function """
         if not prefix:
             return print(text)
         print(f"{self.shell.name}: {text}")

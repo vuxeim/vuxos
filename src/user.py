@@ -17,6 +17,10 @@ class User:
         self.session: bool = False
 
     def attach_session(self, *, shell: Shell) -> None:
+        """
+        Makes user able to interact
+        with operating system via shell
+        """
         self.session = True
         self.shell = shell
 
