@@ -57,8 +57,8 @@ class Node:
         using os-dependent path abstraction.
         """
         if node.parent == None:
-            return path
-        return self._get_abs_path(node.parent, f"/{node.name}{path}")
+            return '/' if not path else path
+        return self._get_abs_path(node.parent, f'/{node.name}{path}')
 
     def __repr__(self):
         return f"{self._type.capitalize()}: {self.name} ({self._path})"
