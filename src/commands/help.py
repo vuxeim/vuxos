@@ -5,8 +5,9 @@ if TYPE_CHECKING:
     from shell import Shell
 
 
-class CMD_pwd:
-    """ Prints work directory command """
+class CMD_help:
+    """ List all available commands """
 
     def __init__(self, shell: Shell, *args: str) -> None:
-        shell.system.print(shell.cwd.absolute)
+        for cmd in shell.resolver.get_list():
+            shell.system.print(f'{cmd.CMD} => {cmd.DOC.strip()}')

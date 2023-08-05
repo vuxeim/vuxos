@@ -18,6 +18,26 @@
                             "type": "file",
                             "content": "vxsh",
                             "nodes": []
+                        },
+                        {
+                            "name": ".config",
+                            "type": "directory",
+                            "content": "",
+                            "nodes": [
+                                {
+                                    "name": "shell",
+                                    "type": "directory",
+                                    "content": "",
+                                    "nodes": [
+                                        {
+                                            "name": "aliases",
+                                            "type": "file",
+                                            "content": "alias p=parent",
+                                            "nodes": []
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 }

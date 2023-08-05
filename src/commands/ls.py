@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from shell import Shell
-
 from command import _arg, _pop_arg
+
 
 class CMD_ls:
     """ List directory content """

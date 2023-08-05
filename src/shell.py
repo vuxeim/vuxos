@@ -5,7 +5,8 @@ if TYPE_CHECKING:
     from user import User
 
 from path import Path
-from command import Resolver, CommandNotFound
+from command import Resolver, CommandNotFound, Command
+
 
 class Shell:
 

@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from shell import Shell
-
 from command import _arg, _pop_arg
+
 
 class CMD_cat:
     """ Print file content """
@@ -40,4 +41,5 @@ class CMD_cat:
         if not node.is_file():
             return self.is_directory()
 
-        return self.sys_print(node.content)
+        text = self.shell.system.safe_decode(node.content)
+        return self.sys_print(text)

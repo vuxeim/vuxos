@@ -1,10 +1,13 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from disk import Disk, Node
     from path import Path
 
-class NodeNotFound(Exception): ...
+
+class _NodeNotFound(Exception): ...
+
 
 class Filesystem:
 
@@ -15,7 +18,7 @@ class Filesystem:
         """ Straightforward. """
         try:
             self.get_node_at(path)
-        except NodeNotFound:
+        except _NodeNotFound:
             return False
         else:
             return True
@@ -41,7 +44,7 @@ class Filesystem:
             if n.name == name:
                 return self._get_node(n, names)
 
-        raise NodeNotFound
+        raise _NodeNotFound
 
     def get_node_at(self, path: Path) -> Node:
         """
@@ -59,4 +62,4 @@ class Filesystem:
         if self.exists(path):
             node = self.get_node_at(path)
             return node.nodes
-        raise FileNotFoundError("Dont catch, use exists() method")
+        raise Exception("Dont catch, use exists() method")
