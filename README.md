@@ -8,7 +8,9 @@ It is like a GUN/Linux emulator in Python. Useless but fun project.
 ### How to run
 0. Be in `src/` directory
 1. Convert JSON file to binary
-`python -m pack D.json D.bin`
+```shell
+python -m pack D.json D.bin
+```
 2. Run `main.py`
 ```shell
 python main.py
