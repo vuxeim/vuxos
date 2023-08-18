@@ -56,13 +56,13 @@ class Resolver:
     def get_names_list(self) -> list[str]:
         return list(self._commands.keys())
 
-def _pop_arg(*args: str) -> tuple[str, tuple[str, ...]]:
+def pop_arg(*args: str) -> tuple[str, tuple[str, ...]]:
     """ Pop next argument from args list """
     if len(args) < 1:
         raise NoRemainingArguments
     return args[0], args[1:]
 
-def _arg(*args: str) -> bool:
+def arg(*args: str) -> bool:
     """ Whether there are arguments left in list """
     if len(args) > 0:
         return True

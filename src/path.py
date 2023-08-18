@@ -2,39 +2,49 @@ from __future__ import annotations
 
 
 class Path:
-    """
-    Represents path
-    # TODO: add support for `..`
-    """
+    """ Represents path """
 
     def __init__(self, *, path: str, username: str, cwd: str) -> None:
 
-        if not self.safe(path):
-            return
+        if path == '':
+            raise Exception("Empty string as path")
 
         self.raw_path = path
         self._user = username
         self._cwd = cwd
-        self.absolute = self._as_absolute()
-        self.pretty = self._prettify()
 
-    @staticmethod
-    def safe(path: str) -> bool:
-        if path == '':
-            raise Exception("Empty string as path")
-        return True
-
-    def _prettify(self) -> str:
-        """
-        Replaces home dir with `~` symbol
-        """
+    @property
+    def pretty(self) -> str:
+        """ Replaces home dir with `~` symbol """
+        # TODO maybe return only last node ~/adir/bdir/cdir -> crid
         pr = self.absolute
         home_dir = f'/home/{self._user}'
         if pr.startswith(home_dir):
             pr = f'~{pr.removeprefix(home_dir)}'
         return pr
 
-    def _as_absolute(self) -> str:
+    @staticmethod
+    def trace_back(path: str) -> str:
+        print(path)
+
+        label = '/..'
+        if label not in path:
+            return path
+
+        if path in ('', '/'):
+            return '/'
+
+        label_idx = path.index(label)
+        slash_idx = path.rindex('/', 0, label_idx)
+        res = path[:slash_idx]+path[label_idx+len(label):]
+        tb = __class__.trace_back(res)
+
+        if path == tb:
+            return res
+        return tb
+
+    @property
+    def absolute(self) -> str:
         """
         Transforms relative path
         to absolute one.
@@ -52,6 +62,12 @@ class Path:
 
         elif absp == '.':
             absp = self._cwd
+
+        elif absp == '..':
+            idx = self._cwd.rindex('/')
+            absp = self._cwd[:idx]
+            if absp == '':
+                absp = '/'
 
         elif absp.startswith("~/"):
             absp = f'/home/{self._user}/{absp.removeprefix("~/")}'

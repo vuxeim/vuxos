@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from shell import Shell
-from command import _arg, _pop_arg
+from command import arg, pop_arg
 
 
 class CMD_ls:
@@ -21,15 +21,15 @@ class CMD_ls:
         self.sys_print = self.shell.system.print
         fs = shell.system.filesystem
 
-        if _arg(*args):
-            arg, args = _pop_arg(*args)
+        if arg(*args):
+            a, args = pop_arg(*args)
             if arg != '-l':
                 flag_l = False
-                self.path = self.shell.pathify(arg)
+                self.path = self.shell.pathify(a)
             else:
                 flag_l = True
-                if _arg(*args):
-                    path, args = _pop_arg(*args)
+                if arg(*args):
+                    path, args = pop_arg(*args)
                     self.path = self.shell.pathify(path)
                 else:
                     self.path = shell.cwd

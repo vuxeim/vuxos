@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from shell import Shell
-from command import _arg, _pop_arg
+from command import arg, pop_arg
 
 
 class CMD_cat:
@@ -24,14 +24,14 @@ class CMD_cat:
 
     def __init__(self, shell: Shell, *args: str) -> None:
         self.shell = shell
-        self.sys_print = self.shell.system.print
+        self.sys_print = shell.system.print
         fs = shell.system.filesystem
 
-        if not _arg(*args):
+        if not arg(*args):
             return self.specify_name()
 
-        path, args = _pop_arg(*args)
-        self.path = self.shell.pathify(path)
+        path, args = pop_arg(*args)
+        self.path = shell.pathify(path)
 
         if not fs.exists(self.path):
             return self.no_file()
@@ -41,5 +41,5 @@ class CMD_cat:
         if not node.is_file():
             return self.is_directory()
 
-        text = self.shell.system.safe_decode(node.content)
+        text = shell.system.safe_decode(node.content)
         return self.sys_print(text)
